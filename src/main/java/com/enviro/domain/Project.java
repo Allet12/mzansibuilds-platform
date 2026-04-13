@@ -7,25 +7,29 @@ import java.util.List;
 
 @Entity
 public class Project implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String name;
+
     private String description;
+
     private LocalDateTime createdAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CollaborationRequest> collaborationRequests;
 
-    protected Project() {
-    }
+    protected Project() {}
 
     public Project(Builder builder) {
         this.id = builder.id;
@@ -37,67 +41,38 @@ public class Project implements Serializable {
         this.collaborationRequests = builder.collaborationRequests;
     }
 
-    public Long getId() {
-        return id;
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
     }
 
-    public String getName() {
-        return name;
-    }
+    public Long getId() { return id; }
+    public String getName() { return name; }
+    public String getDescription() { return description; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public User getUser() { return user; }
+    public List<Post> getPosts() { return posts; }
+    public List<CollaborationRequest> getCollaborationRequests() { return collaborationRequests; }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public List<Post> getPosts() {
-        return posts;
-    }
-
-    public List<CollaborationRequest> getCollaborationRequests() {
-        return collaborationRequests;
-    }
+    public void setName(String name) { this.name = name; }
+    public void setDescription(String description) { this.description = description; }
+    public void setUser(User user) { this.user = user; }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Project project)) return false;
-
-        if (getId() != null ? !getId().equals(project.getId()) : project.getId() != null) return false;
-        if (getName() != null ? !getName().equals(project.getName()) : project.getName() != null) return false;
-        if (getDescription() != null ? !getDescription().equals(project.getDescription()) : project.getDescription() != null) return false;
-        if (getCreatedAt() != null ? !getCreatedAt().equals(project.getCreatedAt()) : project.getCreatedAt() != null) return false;
-        return getUser() != null ? getUser().equals(project.getUser()) : project.getUser() == null;
+        if (!(o instanceof Project that)) return false;
+        return id != null && id.equals(that.id);
     }
 
     @Override
     public int hashCode() {
-        int result = getId() != null ? getId().hashCode() : 0;
-        result = 31 * result + (getName() != null ? getName().hashCode() : 0);
-        result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
-        result = 31 * result + (getCreatedAt() != null ? getCreatedAt().hashCode() : 0);
-        result = 31 * result + (getUser() != null ? getUser().hashCode() : 0);
-        return result;
+        return getClass().hashCode();
     }
 
     @Override
     public String toString() {
-        return "Project{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", createdAt=" + createdAt +
-                ", user=" + user +
-                ", posts=" + posts +
-                ", collaborationRequests=" + collaborationRequests +
-                '}';
+        return "Project{id=" + id + ", name='" + name + "'}";
     }
 
     public static class Builder {
@@ -109,40 +84,13 @@ public class Project implements Serializable {
         private List<Post> posts;
         private List<CollaborationRequest> collaborationRequests;
 
-        public Builder setId(Long id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder setName(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public Builder setDescription(String description) {
-            this.description = description;
-            return this;
-        }
-
-        public Builder setCreatedAt(LocalDateTime createdAt) {
-            this.createdAt = createdAt;
-            return this;
-        }
-
-        public Builder setUser(User user) {
-            this.user = user;
-            return this;
-        }
-
-        public Builder setPosts(List<Post> posts) {
-            this.posts = posts;
-            return this;
-        }
-
-        public Builder setCollaborationRequests(List<CollaborationRequest> collaborationRequests) {
-            this.collaborationRequests = collaborationRequests;
-            return this;
-        }
+        public Builder setId(Long id) { this.id = id; return this; }
+        public Builder setName(String name) { this.name = name; return this; }
+        public Builder setDescription(String description) { this.description = description; return this; }
+        public Builder setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; return this; }
+        public Builder setUser(User user) { this.user = user; return this; }
+        public Builder setPosts(List<Post> posts) { this.posts = posts; return this; }
+        public Builder setCollaborationRequests(List<CollaborationRequest> collaborationRequests) { this.collaborationRequests = collaborationRequests; return this; }
 
         public Builder copy(Project project) {
             this.id = project.id;

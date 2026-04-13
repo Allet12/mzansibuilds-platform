@@ -46,8 +46,28 @@ public class Comment implements Serializable {
         return text;
     }
 
+    public String getContent() {
+        return text;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     @Override
@@ -107,6 +127,11 @@ public class Comment implements Serializable {
 
         public Builder setText(String text) {
             this.text = text;
+            return this;
+        }
+
+        public Builder setContent(String content) {
+            this.text = content;
             return this;
         }
 

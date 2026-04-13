@@ -56,6 +56,26 @@ public class CollaborationRequest implements Serializable {
         return approved;
     }
 
+    public void setRequester(User requester) {
+        this.requester = requester;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setRequestedAt(LocalDateTime requestedAt) {
+        this.requestedAt = requestedAt;
+    }
+
+    public void setApproved(boolean approved) {
+        this.approved = approved;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

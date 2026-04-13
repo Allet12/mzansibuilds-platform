@@ -4,19 +4,23 @@ import com.enviro.domain.Post;
 import com.enviro.domain.User;
 import com.enviro.domain.Project;
 import com.enviro.util.Helper;
-import java.time.LocalDateTime;
 
 public class PostFactory {
-    public static Post createPost(Long id, User author, String content, LocalDateTime createdAt, Project project) {
-        if (!Helper.isValidId(id) || !Helper.isValidObject(author) || Helper.isNullOrEmpty(content) || !Helper.isValidDateTime(createdAt) || !Helper.isValidObject(project)) {
-            return null;
-        }
+
+    public static Post createPost(User author, String content, Project project) {
+
+        if (!Helper.isValidObject(author))
+            throw new IllegalArgumentException("Author is required");
+
+        if (Helper.isNullOrEmpty(content))
+            throw new IllegalArgumentException("Content is required");
+
+        if (!Helper.isValidObject(project))
+            throw new IllegalArgumentException("Project is required");
 
         return new Post.Builder()
-                .setId(id)
                 .setAuthor(author)
                 .setContent(content)
-                .setCreatedAt(createdAt)
                 .setProject(project)
                 .build();
     }
